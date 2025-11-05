@@ -1,54 +1,76 @@
 #!/bin/bash
 
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
-### Settings are automatically loaded as bash variables
-### in every app script context, therefore typically these will exist:
-### - $domain
-### - $path
-### - $language
-### - $install_dir
-### - $port
-### ...
-
-### For remove operations:
-### - the core will deprovision every resource defined in the manifest **after** this script is ran
-### this includes removing the install directory, and data directory (if --purge was used)
-
 #=================================================
-# REMOVE SYSTEM CONFIGURATION
+# REMOVE SERVICE FROM ADMIN PANEL
 #=================================================
-ynh_script_progression "Removing system configurations related to $app..."
 
-### This should be a symetric version of what happens in the install script
-
-ynh_config_remove_fail2ban
-
-ynh_config_remove_logrotate
-
-# Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
-if ynh_hide_warnings yunohost service status "$app" >/dev/null; then
-    yunohost service remove "$app"
+# Remove the service from the list of services known by Yunohost (added from `yunohost service add`)
+if ynh_hide_warnings yunohost service status $app >/dev/null; then
+	yunohost service remove $app
 fi
+
+#=================================================
+# STOP AND REMOVE SERVICE
+#=================================================
+ynh_script_progression "Stopping and removing the systemd service..."
+
 ynh_config_remove_systemd
+
+#=================================================
+# REMOVE DATA DIR
+#=================================================
+
+# Remove the data directory if --purge option is used
+if [ "${YNH_APP_PURGE:-0}" -eq 1 ]
+then
+	ynh_script_progression "Removing app data directory..."
+	ynh_safe_rm "$calibre_library_dir"
+fi
+
+#=================================================
+# REMOVE KEPUBIFY AND CALIBRE DIR
+#=================================================
+ynh_script_progression "Removing kepubify and Calibre directory..."
+
+ynh_safe_rm "/opt/kepubify/$app"
+ynh_safe_rm "/opt/calibre/$app"
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression "Removing nginx web server configuration..."
 
 ynh_config_remove_nginx
 
-ynh_config_remove_phpfpm
+#=================================================
+# REMOVE LOGROTATE CONFIGURATION
+#=================================================
+ynh_script_progression "Removing logrotate configuration..."
 
-# Remove other various files specific to the app... such as:
-
-ynh_safe_rm "/etc/cron.d/$app"
-
-ynh_safe_rm "/etc/$app"
+ynh_config_remove_logrotate
 
 #=================================================
-# END OF SCRIPT
+# REMOVE FAIL2BAN CONFIGURATION
 #=================================================
+ynh_script_progression "Removing Fail2Ban configuration..."
 
+ynh_config_remove_fail2ban
+
+ynh_script_progression "Removing log file..."
+
+ynh_safe_rm "$log_file"
+ynh_safe_rm "$access_log_file"
+
+#=================================================
+# MESSAGE TO USER
+#=================================================
 ynh_script_progression "Removal of $app completed"
+
+# Remove the data directory if --purge option is used
+if [ "${YNH_APP_PURGE:-0}" -eq 0 ]
+then
+	ynh_print_info "The library folder $calibre_dir was not deleted. Delete it manually if required"
+fi
