@@ -6,8 +6,13 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
-WorkingDirectory=__INSTALL_DIR__/
-ExecStart=/bin/sh -c '__INSTALL_DIR__/venv/bin/python __INSTALL_DIR__/cps.py'
+Environment="PATH=__INSTALL_DIR__/tools/calibre"
+WorkingDirectory=__INSTALL_DIR__/cwa
+EnvironmentFile=__INSTALL_DIR__/.env
+ExecStart=/bin/sh -c '__INSTALL_DIR__/cwa/venv/bin/python3 __INSTALL_DIR__/cwa/cps.py'
+StandardOutput=append:/var/log/__APP__/__APP__.log
+StandardError=append:/var/log/__APP__/__APP__.log
+
 
 # Sandboxing options to harden security
 # Depending on specificities of your service/app, you may need to tweak these 

@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "3.4.1~ynh1"
+version = "3.1.4~ynh1"
 
 maintainers = ["Thovi98"]
 
@@ -45,53 +45,21 @@ ram.runtime = "200M"
     type = "group"
     default = "all_users"
 
-    [install.language]
-    ask.en = "Choos"
-    ask.fr = "Choisissez une langue par défaut"
-    help.en = "You may change it later in the app"
-    help.fr = "Vous pourrez la changer ultérieurement dans l'application"
-    type = "select"
-    optional = true
-    choices = ["fr", "en", "es", "de"]
-    default = "fr"
-
-    [install.upload]
-    ask.en = "Do you want to allow uploading of books?"
-    ask.fr = "Voulez vous autoriser le téléversement de livres?"
-    help.en = "You may change it later in the app"
-    help.fr = "Vous pourrez le changer ultérieurement dans l'application"
-    type = "boolean"
-    optional = true
-    default = false
-
-    [install.public_library]
-    ask.en = "Do you want to allow access to the library to all Yunohost users? "
-    ask.fr = "Voulez vous autoriser l'accès à la bibliothèque à tous les utilisateurs Yunohost?"
-    help.en = "Yes will set the library in /home/yunohost.multimedia/share/eBook"
-    help.fr = "Oui parametrera la bibliothèque pour /home/yunohost.multimedia/share/eBook"
-    type = "boolean"
-    optional = true
-    default = true
-
 [resources]
     [resources.sources.cwa]
-    url = "https://github.com/crocodilestick/Calibre-Web-Automated/archive/refs/tags/V3.1.4.tar.gz"
-    sha256 = "fa78aff1f1d49d0bd21858e22a5486cda18f1ee4fa3fd907ee5be522686dbf7b"
-
-    autoupdate.strategy = "latest_github_release"
-
-    [resources.sources.calibreweb]
-    url = "https://github.com/janeczku/calibre-web/archive/refs/tags/0.6.25.zip"
-    sha256 = "f257811519c662c9911cb98bd0c969cb0e3047ba7c80f8ba2e3a6bf7837cb107"
+    url = "https://github.com/crocodilestick/Calibre-Web-Automated/archive/06c9b40ec886a4d8a9952165a32dff3709e8e34a.tar.gz"
+    sha256 = "97d779efe7e2e26c85a2cfb89278d68bec1409d7c1e1c067bf67239d1f9464a0"
 
     autoupdate.strategy = "latest_github_release"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/kovidgoyal/calibre/releases/download/v8.13.0/calibre-8.13.0-x86_64.txz"
-    amd64.sha256 = "58547be7c7458a7af79e41d86aaedf3160b69de3891bdb709095c5106eb19302"
+    amd64.url = "https://github.com/kovidgoyal/calibre/releases/download/v8.14.0/calibre-8.14.0-x86_64.txz"
+    amd64.sha256 = "a7954a4fc35ced23035d5319ecef1a72f21fe3ea5736d2483b7ffc8e9950d7c0"
     arm64.url = "https://github.com/kovidgoyal/calibre/releases/download/v8.13.0/calibre-8.13.0-arm64.txz"
     arm64.sha256 = "687a8303e3f4c1ed886fbf45ed51b5b72380ec40c57d6688113eaeec015f82fc"
 
+    extract = false
+    rename = "calibre.txz"
     autoupdate.strategy = "latest_github_release"
 
     [resources.sources.kepubify]
@@ -115,11 +83,10 @@ ram.runtime = "200M"
     allow_email = true
 
     [resources.install_dir]
-    subdirs = [ "ingest", "config" ]
 
     [resources.data_dir]
-    # This will create/remove the data dir as /home/yunohost.app/$app
-    # and store the corresponding setting $data_dir
+    subdirs = [ "eBook" ]
+
 
     [resources.permissions]
     main.url = "/"
@@ -144,7 +111,8 @@ ram.runtime = "200M"
         "libldap2-dev",   # for compiling the ldap dependency during pip install
         "libsasl2-dev",   # for compiling the ldap dependency during pip install
         "libjpeg-dev",    # for comics and image reading in browser
-        "build-essential" # for building lol
+        "build-essential", # for building lol
+        "unrar-free"
     ]
     packages_from_raw_bash = """
     if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then

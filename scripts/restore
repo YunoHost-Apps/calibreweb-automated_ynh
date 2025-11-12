@@ -1,12 +1,15 @@
 #!/bin/bash
 
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
-# Keep this path for calling _common.sh inside the execution's context of backup and restore scripts
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
+
+
+#=================================================
+# RESTORE THE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression "Restoring nginx configuration..."
+
+ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
 
 #=================================================
 # RESTORE THE APP MAIN DIR
@@ -15,11 +18,6 @@ ynh_script_progression "Restoring the app main directory..."
 
 ynh_restore "$install_dir"
 
-### $install_dir will automatically be initialized with some decent
-### permissions by default... however, you may need to recursively reapply
-### ownership to all files such as after the ynh_setup_source step
-chown -R "$app:www-data" "$install_dir"
-
 #=================================================
 # RESTORE THE DATA DIRECTORY
 #=================================================
@@ -27,68 +25,92 @@ ynh_script_progression "Restoring the data directory..."
 
 ynh_restore "$data_dir"
 
-### (Same as for install dir)
-chown -R "$app:$app" "$data_dir"
+#=================================================
+# RESTORE SYSTEMD
+#=================================================
+ynh_script_progression "Restoring $app's systemd service..."
+
+ynh_restore "/etc/systemd/system/"${app}".service"
+
+systemctl enable "${app}" --quiet
+
+yunohost service add "${app}" --description="CWA Browse eBook on the web" --log="$log_file"
 
 #=================================================
-# RESTORE THE MYSQL DATABASE
+# RESTORE THE LOGROTATE CONFIGURATION
 #=================================================
-ynh_script_progression "Restoring the MySQL database..."
-
-ynh_mysql_db_shell < ./db.sql
-
-#=================================================
-# RESTORE SYSTEM CONFIGURATION
-#=================================================
-ynh_script_progression "Restoring system configurations related to $app..."
-
-### This should be a symetric version of what happens in the install script
-
-ynh_restore "/etc/php/$php_version/fpm/pool.d/$app.conf"
-
-ynh_restore "/etc/nginx/conf.d/$domain.d/$app.conf"
-
-ynh_restore "/etc/systemd/system/$app.service"
-systemctl enable "$app.service" --quiet
-
-yunohost service add "$app" --description="A short description of the app" --log="/var/log/$app/$app.log"
 
 ynh_restore "/etc/logrotate.d/$app"
 
+#=================================================
+# RESTORE THE LOG FILE DIRECTORY
+#=================================================
+
+mkdir -p /var/log/$app
+chown -R $app:$app /var/log/$app
+
+#=================================================
+# RESTORE THE DATA DIRECTORY
+#=================================================
+ynh_script_progression "Restoring data directory if required..."
+
+ynh_restore "$calibre_library_dir" || true
+
+#=================================================
+# RESTORE THE MULTIMEDIA DIR IF NOT EXISTING
+#=================================================
+ynh_script_progression "Restoring the multimedia directory..."
+
+ynh_multimedia_build_main_dir
+ynh_multimedia_addaccess $app
+
+#=================================================
+# INITIALIZE DATA IF NOT EXISTING
+#=================================================
+
+if [ ! -e "$calibre_library_dir" ]; then
+	ynh_print_info "Create calibre library folder $calibre_library_dir"
+	mkdir -p $calibre_library_dir
+	chown -R $app:$app $calibre_library_dir
+fi
+
+#=================================================
+# RESTORE THE FAIL2BAN CONFIGURATION
+#=================================================
+ynh_script_progression "Restoring the Fail2Ban configuration..."
+
 ynh_restore "/etc/fail2ban/jail.d/$app.conf"
 ynh_restore "/etc/fail2ban/filter.d/$app.conf"
+
+if [ ! -f "$log_file" ]; then
+	touch "$log_file"
+	chown $app: "$log_file"
+fi
+
 ynh_systemctl --action=restart --service=fail2ban
 
 #=================================================
-# RESTORE VARIOUS FILES
+# GENERIC FINALIZATION
 #=================================================
-
-ynh_restore "/etc/cron.d/$app"
-ynh_restore "/etc/$app/"
-
-### For apps with huge logs, you might want to not backup logs every time:
-### The mkdir call is just here in case the log directory was not backed up.
-### mkdir -p "/var/log/$app"
-### chown $app:www-data "/var/log/$app"
-### ynh_restore "/var/log/$app/" || true
-###
-### For other apps, the simple way is better:
-ynh_restore "/var/log/$app/"
-
+# RELOAD NGINX
 #=================================================
-# RELOAD NGINX AND PHP-FPM OR THE APP SERVICE
-#=================================================
-ynh_script_progression "Reloading NGINX web server and $app's service..."
-
-### Typically you only have either $app or PHP-FPM but not both at the same time...
-ynh_systemctl --service="$app" --action="start"
-
-ynh_systemctl --service="php$php_version-fpm" --action=reload
+ynh_script_progression "Reloading nginx web server..."
 
 ynh_systemctl --service=nginx --action=reload
 
 #=================================================
+# START SYSTEMD SERVICE
+#=================================================
+ynh_script_progression "Starting a systemd service..."
+
+ynh_systemctl --service="${app}" --action="start" --wait_until="Starting Gevent server on" -t 60
+
+#=================================================
 # END OF SCRIPT
 #=================================================
-
 ynh_script_progression "Restoration completed for $app"
+
+#=================================================
+# WARNING FOR READ ACCESS
+#=================================================
+ynh_print_warn "Please, give required access to $app user to the $calibre_library_dir folder."
