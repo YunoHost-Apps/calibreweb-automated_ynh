@@ -7,112 +7,152 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-### Settings are automatically loaded as bash variables
-### in every app script context, therefore typically these will exist:
-### - $domain
-### - $path
-### - $language
-### - $install_dir
-### - $port
-### ...
-
-### In the context of upgrade,
-### - resources are automatically provisioned / updated / deleted (depending on existing resources)
-### - a safety backup is automatically created by the core and will be restored if the upgrade fails
+timezone=$(timedatectl show --value --property=Timezone)
+admin_mail=$(ynh_user_get_info --username="$admin" --key=mail)
+cwa_release=$(ynh_app_upstream_version)
 
 #=================================================
 # STOP SYSTEMD SERVICE
 #=================================================
 ynh_script_progression "Stopping $app's systemd service..."
 
-ynh_systemctl --service="$app" --action="stop"
-
-#=================================================
-# ENSURE DOWNWARD COMPATIBILITY
-#=================================================
-ynh_script_progression "Ensuring downward compatibility..."
-
-ynh_app_setting_set_default --key=php_upload_max_filesize --value=50M
-ynh_app_setting_set_default --key=php_post_max_size --value=50M
-
-### N.B. : the following setting migration snippets are provided as *EXAMPLES*
-### of what you may want to do in some cases (e.g. a setting was not defined on
-### some legacy installs and you therefore want to initiaze stuff during upgrade)
-
-# If db_name doesn't exist, create it
-# ynh_app_setting_set_default --key=db_name --value="$(ynh_sanitize_dbid --db_name=$app)"
-
-# If install_dir doesn't exist, create it
-# ynh_app_setting_set_default --key=install_dir --value="/var/www/$app"
+ynh_systemctl --service="${app}" --action="stop"
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
-ynh_script_progression "Upgrading source files..."
+ynh_script_progression "Setting up source files..."
 
-### ynh_setup_source can wipe the destination dir if called with --full_replace.
-### On upgrade, that is certainly what you want, to remove any old source file that
-### does not exist in the new version of the software.
-### You can list with --keep every file/directory to *not* wipe or overwrite,
-### useful for configuration files, data directories, or plugins.
-# Download, check integrity, uncompress and patch the source from manifest.toml
-ynh_setup_source --dest_dir="$install_dir" --full_replace --keep=".env data"
+#Set settings constant initializer of the app (variables aren’t updated otherwise)
+ynh_config_add --template="../patches/cwa/ub.py.patch.src" --destination="../patches/cwa/ub.py.patch"
 
-### $install_dir will automatically be initialized with some decent
-### permissions by default... however, you may need to recursively reapply
-### ownership to all files such as after the ynh_setup_source step
-chown -R "$app:www-data" "$install_dir"
+ynh_script_progression "Setting up cwa..."
+ynh_setup_source --dest_dir="$install_dir/cwa" --source_id="cwa" --full_replace=1
+
+# Install kepubify converter
+ynh_script_progression "Setting up kepubify..."
+ynh_setup_source --dest_dir="$install_dir/tools" --source_id="kepubify" --full_replace=1
+
+# Install Calibre
+ynh_script_progression "Setting up Calibre..."
+ynh_setup_source --dest_dir="$install_dir/tools/calibre" --source_id="calibre"
+
+pushd "$install_dir/tools/calibre"
+	tar -xvf calibre.txz
+popd
+
+chown -R $app:$app $install_dir
+chmod -R 770 $install_dir/tools
 
 #=================================================
-# UPDATE A CONFIG FILE
+# UPDATE FILES AND DIRECTORIES
 #=================================================
-ynh_script_progression "Updating $app's configuration files..."
+ynh_script_progression "Updating files and directory..."
 
-### Same as during install
-###
-### The file will automatically be backed-up if it's found to be manually modified (because
-### ynh_config_add keeps track of the file's checksum)
+#build multimedia directory
+ynh_multimedia_build_main_dir
+ynh_multimedia_addaccess $app
 
-ynh_config_add --template="some_config_file" --destination="$install_dir/some_config_file"
+#=================================================
+# APP INITIAL CONFIGURATION
+#=================================================
+ynh_script_progression "Adding $app's configuration files..."
 
-# FIXME: this should be handled by the core in the future
-### You may need to use chmod 600 instead of 400,
-### for example if the app is expected to be able to modify its own config
-chmod 400 "$install_dir/some_config_file"
-chown "$app:$app" "$install_dir/some_config_file"
+ynh_config_add --template=".env" --destination="$install_dir/.env"
 
-### For more complex cases where you want to replace stuff using regexes,
-### you shoud rely on ynh_replace (which is basically a wrapper for sed)
-### When doing so, you also need to manually call ynh_store_file_checksum
-###
-### ynh_replace --match="match_string" --replace="replace_string" --file="$install_dir/some_config_file"
-### ynh_store_file_checksum "$install_dir/some_config_file"
+ynh_config_add --template="koplugin.zip" --destination="$install_dir/cwa/cps/static/koplugin.zip"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression "Updating nginx web server configuration..."
+
+ynh_script_progression "Upgrading nginx web server configuration..."
+#Cannot use empty string for X-script-name, causes an issue in the python prg
+#https://github.com/janeczku/calibre-web/wiki/Setup-Reverse-Proxy#nginx
+if [ $path = "/" ] ; then
+	ynh_replace --match="        proxy_set_header	X-Script-Name		__PATH__;" \
+	            --replace="        proxy_set_header	X-Script-Name		/__PATH__;" \
+	            --file="../conf/nginx.conf"
+fi
+
+#Setting the proxy authentication in case calibre is not open to visitor.
+#https://github.com/janeczku/calibre-web/wiki/Setup-Reverse-Proxy#login-via-header-from-upstream-authentication-source
+if $(ynh_permission_has_user --permission=main --user=visitors); then
+	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_login_header_name='', config_allow_reverse_proxy_header_login=0 WHERE ID=1;"
+	ynh_replace --match="        proxy_set_header	X-Remote-User" \
+	            --replace="#       proxy_set_header	X-Remote-User" \
+	            --file="../conf/nginx.conf"
+else
+	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_login_header_name='X-Remote-User', config_allow_reverse_proxy_header_login='True', config_allow_reverse_proxy_header_login=1 WHERE ID=1;"
+fi
+
+# Create a dedicated nginx config
+ynh_config_add_nginx
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression "Installing pip requirements..."
+
+pushd "$install_dir/cwa"
+	ynh_exec_as_app python3 -m venv "$install_dir/cwa/venv"
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --upgrade wheel pip setuptools
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --no-cache-dir --upgrade --use-pep517 -r "$install_dir/cwa/requirements.txt"
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --no-cache-dir --upgrade --use-pep517 -r "$install_dir/cwa/optional-requirements.txt"
+
+	find cps -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
+	find scripts -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
+	
+	# Compile translations, otherwise we only have English
+	ynh_hide_warnings bash scripts/compile_translations.sh 
+popd
+
+chmod +x "$install_dir/cwa/scripts/"*.sh || true
+chmod +x "$install_dir/cwa/scripts/"*.py || true
+chmod 775 "$install_dir/cwa/cps/"*.py || true
+
+ynh_script_progression "Starting patching operations..."
+
+_ynh_patch_cwa
+
+#=================================================
+# SETUP LOGROTATE
+#=================================================
+
+# Use logrotate to manage application logfile(s)
+ynh_config_add_logrotate "$log_file"
+ynh_config_add_logrotate "$access_log_file"
+
+#=================================================
+# SETUP FAIL2BAN
+#=================================================
+ynh_script_progression "Configuring Fail2Ban..."
+
+# Make sure a log file exists (mostly for CI tests)
+ if [ ! -f "$log_file" ]; then
+	touch "$log_file"
+	chown $app: "$log_file"
+fi
+
+# Create a dedicated Fail2Ban config
+ynh_config_add_fail2ban --logpath="$log_file" --failregex="^.*LDAP Login failed for user .* IP-address: <HOST>.*$"
 
 #=================================================
 # REAPPLY SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression "Upgrading system configurations related to $app..."
 
-### This should be a literal copypaste of what happened in the install's "System configuration" section
+# Create a dedicated systemd config
+ynh_config_add_systemd --service="${app}" --template="cwa.service"
 
-ynh_config_add_phpfpm
-
-ynh_config_add_nginx
-
-ynh_config_add_systemd
-
-yunohost service add "$app" --description="A short description of the app" --log="/var/log/$app/$app.log"
-
-ynh_config_add_logrotate
-
-ynh_config_add_fail2ban --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
+yunohost service add "${app}" --description="CWA Browse eBook on the web" --log="$log_file"
 
 #=================================================
-# START SYSTEMD SERVICE
+# STARTING APP
 #=================================================
-ynh_script_progression "Starting $app's systemd service..."
+ynh_script_progression "Start $app..."
 
-ynh_systemctl --service="$app" --action="start"
+ynh_systemctl --service="${app}" --action="start" --wait_until="Starting Gevent server on" -t 60
 
 #=================================================
 # END OF SCRIPT

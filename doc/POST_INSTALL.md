@@ -1,7 +1,6 @@
-This is a dummy disclaimer to display after the install
+Congratz, __APP__ has been successfully installed! 🎉
 
-The app url is <https://__DOMAIN____PATH__>
+You can now connect as admin with the user you have chosen during installation.
+❗A default user, admin (with password admin123) has been created in the meantime. Be sure to delete this user as soon as you finish reading this ❗
 
-The app install dir is `__INSTALL_DIR__`
-
-The app id is `__ID__`
+Rember this app is a fork of Calibre-Web and is in active development. Some features may not be stable yet.

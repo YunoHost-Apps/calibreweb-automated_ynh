@@ -8,16 +8,11 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 # Remove the service from the list of services known by Yunohost (added from `yunohost service add`)
-if ynh_hide_warnings yunohost service status $app >/dev/null; then
-	yunohost service remove $app
+if ynh_hide_warnings yunohost service status "${app}" >/dev/null; then
+	yunohost service remove "${app}"
 fi
 
-#=================================================
-# STOP AND REMOVE SERVICE
-#=================================================
-ynh_script_progression "Stopping and removing the systemd service..."
-
-ynh_config_remove_systemd
+ynh_config_remove_systemd "${app}"
 
 #=================================================
 # REMOVE DATA DIR
@@ -29,14 +24,6 @@ then
 	ynh_script_progression "Removing app data directory..."
 	ynh_safe_rm "$calibre_library_dir"
 fi
-
-#=================================================
-# REMOVE KEPUBIFY AND CALIBRE DIR
-#=================================================
-ynh_script_progression "Removing kepubify and Calibre directory..."
-
-ynh_safe_rm "/opt/kepubify/$app"
-ynh_safe_rm "/opt/calibre/$app"
 
 #=================================================
 # REMOVE NGINX CONFIGURATION

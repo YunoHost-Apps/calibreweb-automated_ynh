@@ -1,0 +1,14 @@
+version = "1.0"
+
+[main]
+name.en = "main configuration"
+name.fr = "Configuration principale"
+services = ["__APP__"]
+
+    [main.library_dir]
+    name = "Library Path"
+
+        [main.library_dir.calibre_library_dir]
+        ask.en = "Change path of the electronic library"
+        help.en = "Please assure that read/write permissions to this location are correctly set"
+        type = "path"
