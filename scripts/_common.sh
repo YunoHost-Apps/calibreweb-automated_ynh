@@ -43,7 +43,7 @@ pushd $CWA
   sed -i -e "s|\"$OLD_CONFIG_DIR/$CONVERSION\"| \"$CONFIG_DIR/$CONVERSION\"|" \
     -e "s|\"/$INGEST\"| \"$install_dir/config/$INGEST\"|" dirs.json
 
-  
+
   # Gather list of Python scripts to be iterated
   FILES=$(find ./scripts "$APP" -type f -name "*.py" -or -name "*.html")
   # Create two arrays containing the paths to be modified
@@ -94,7 +94,7 @@ _ynh_adapt_cwa_db() {
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_dn='dc=yunohost,dc=org'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=calibreweb.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_group_object_filter='(&(objectClass=posixGroup)(cn=%s.main))'"
- 
+
   # Correct logs path
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_logfile='$log_file'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_access_log='1'"

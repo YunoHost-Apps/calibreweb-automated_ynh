@@ -102,9 +102,9 @@ pushd "$install_dir/cwa"
 
 	find cps -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
 	find scripts -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
-	
+
 	# Compile translations, otherwise we only have English
-	ynh_hide_warnings bash scripts/compile_translations.sh 
+	ynh_hide_warnings bash scripts/compile_translations.sh
 popd
 
 chmod +x "$install_dir/cwa/scripts/"*.sh || true

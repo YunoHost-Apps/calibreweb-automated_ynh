@@ -9,4 +9,4 @@ or
 chmod o+rw path/to/library
 ```
 
-* When you add a book from the web interface, you have to "Refresh Library" to take the new book into account. There is currently no watching option in this package. 
+* When you add a book from the web interface, you have to "Refresh Library" to take the new book into account. There is currently no watching option in this package.
