@@ -20,4 +20,4 @@ index 0bbd0ed..9467153 100644
 +    user.email = "__ADMIN_MAIL__"
      user.role = constants.ADMIN_USER_ROLES
      user.sidebar_view = constants.ADMIN_USER_SIDEBAR
- 
+
