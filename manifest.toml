@@ -91,13 +91,20 @@ ram.runtime = "200M"
     [resources.permissions]
     main.url = "/"
 
-    kobo.url= "/kobo"
-    kobo.show_tile= false
-    kobo.allowed= "visitors"
+    kobo.url = "/kobo"
+    kobo.show_tile = false
+    kobo.allowed = "visitors"
+    kobo.protected = true
 
-    opds.url="/opds"
-    opds.show_tile= false
-    opds.allowed= "visitors"
+    opds.url = "/opds"
+    opds.show_tile = false
+    opds.allowed = "visitors"
+    opds.protected = true
+
+    api.url = "/api/v3"
+    api.show_tile = false
+    api.allowed = "visitors"
+    api.protected = true
 
     [resources.ports]
     main.default = 8083
