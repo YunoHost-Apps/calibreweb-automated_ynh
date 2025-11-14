@@ -94,12 +94,12 @@ ram.runtime = "200M"
     kobo.url = "/kobo"
     kobo.show_tile = false
     kobo.allowed = "visitors"
-    api.fixed = true
+    kobo.fixed = true
 
     opds.url = "/opds"
     opds.show_tile = false
     opds.allowed = "visitors"
-    api.fixed = true
+    opds.fixed = true
 
     api.url = "/api/v3"
     api.show_tile = false
