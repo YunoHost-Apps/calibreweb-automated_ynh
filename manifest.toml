@@ -47,8 +47,8 @@ ram.runtime = "200M"
 
 [resources]
     [resources.sources.cwa]
-    url = "https://github.com/crocodilestick/Calibre-Web-Automated/archive/06c9b40ec886a4d8a9952165a32dff3709e8e34a.tar.gz"
-    sha256 = "97d779efe7e2e26c85a2cfb89278d68bec1409d7c1e1c067bf67239d1f9464a0"
+    url = "https://github.com/wolffshots/Calibre-Web-Automated/archive/d880ec1ee8c778d124de81be8bf0a66cd77c5715.tar.gz"
+    sha256 = "39366a8f20d372f21a30516260148100fb7d9914b95280b07bc34db0aebbcdf4"
 
     autoupdate.strategy = "latest_github_release"
 
