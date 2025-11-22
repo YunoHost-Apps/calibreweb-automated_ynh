@@ -22,6 +22,6 @@ jobs:
       - name: Copy Release
         uses: aminya/sync-releases@v1
         with:
-          source: "https://github.com/kovidgoyal/calibre"
+          source: "kovidgoyal/calibre"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ inputs.tag }}
