@@ -60,6 +60,8 @@ ram.runtime = "200M"
 
     extract = false
     rename = "calibre.txz"
+    # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
+    autoupdate.upstream = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh"
     autoupdate.strategy = "latest_github_release"
 
     [resources.sources.kepubify]
