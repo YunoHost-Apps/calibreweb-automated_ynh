@@ -1,0 +1,27 @@
+name: Sync Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to sync"
+        required: true
+        default: "latest"
+  push:
+    tags:
+      - "*"
+
+# Ensure the action has write permissions to the current repository
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy Release
+        uses: aminya/sync-releases@v1
+        with:
+          source: "https://github.com/kovidgoyal/calibre"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.tag }}
