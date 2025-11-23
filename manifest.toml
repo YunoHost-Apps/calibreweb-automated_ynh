@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "3.1.4~ynh1"
+version = "3.1.4~ynh2"
 
 maintainers = ["Thovi98"]
 
@@ -20,7 +20,7 @@ fund = "https://ko-fi.com/crocodilestick"
 [integration]
 yunohost = ">= 12.1.34"
 helpers_version = "2.1"
-architectures = "all"
+architectures = ["amd64", "arm64"]
 multi_instance = true
 
 ldap = true
@@ -54,16 +54,18 @@ ram.runtime = "200M"
     autoupdate.version_regex = "^V(.*)$"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/kovidgoyal/calibre/releases/download/v8.14.0/calibre-8.14.0-x86_64.txz"
-    amd64.sha256 = "a7954a4fc35ced23035d5319ecef1a72f21fe3ea5736d2483b7ffc8e9950d7c0"
-    arm64.url = "https://github.com/kovidgoyal/calibre/releases/download/v8.14.0/calibre-8.14.0-arm64.txz"
-    arm64.sha256 = "f52a691bce2b0d927b630c0d9a1ba0ce5c33741596d64b9f980123c91e2ad80e"
+    amd64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v8.15.0/calibre-8.15.0-x86_64.txz"
+    amd64.sha256 = "efbe6f3269e05b5270187024dd30d9b8a9df6363d63615b02723d7ba8c49bb93"
+    arm64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v8.15.0/calibre-8.15.0-arm64.txz"
+    arm64.sha256 = "ee084aa488935e7619a72b5c615f4086a06006846189b8ea638f9abf115beb9e"
 
     extract = false
     rename = "calibre.txz"
     # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
     autoupdate.upstream = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh"
     autoupdate.strategy = "latest_github_release"
+    autoupdate.asset.amd64 = ".*x86_64.tar.txz"
+    autoupdate.asset.arm64 = ".*arm64.tar.txz"
 
     [resources.sources.kepubify]
     arm64.url = "https://github.com/pgaskin/kepubify/releases/download/v4.0.4/kepubify-linux-arm64"
