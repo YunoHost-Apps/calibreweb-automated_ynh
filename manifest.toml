@@ -64,8 +64,8 @@ ram.runtime = "200M"
     # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
     autoupdate.upstream = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh"
     autoupdate.strategy = "latest_github_release"
-    autoupdate.asset.amd64 = ".*x86_64.tar.txz"
-    autoupdate.asset.arm64 = ".*arm64.tar.txz"
+    autoupdate.asset.amd64 = ".*x86_64.txz"
+    autoupdate.asset.arm64 = ".*arm64.txz"
 
     [resources.sources.kepubify]
     arm64.url = "https://github.com/pgaskin/kepubify/releases/download/v4.0.4/kepubify-linux-arm64"
