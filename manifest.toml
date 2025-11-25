@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "3.1.4~ynh2"
+version = "3.1.4~ynh3"
 
 maintainers = ["Thovi98"]
 
@@ -47,8 +47,8 @@ ram.runtime = "200M"
 
 [resources]
     [resources.sources.cwa]
-    url = "https://github.com/crocodilestick/Calibre-Web-Automated/archive/06c9b40ec886a4d8a9952165a32dff3709e8e34a.tar.gz"
-    sha256 = "97d779efe7e2e26c85a2cfb89278d68bec1409d7c1e1c067bf67239d1f9464a0"
+    url = "https://github.com/crocodilestick/Calibre-Web-Automated/archive/refs/tags/V3.1.4.tar.gz"
+    sha256 = "fa78aff1f1d49d0bd21858e22a5486cda18f1ee4fa3fd907ee5be522686dbf7b"
 
     autoupdate.strategy = "latest_github_release"
     autoupdate.version_regex = "^V(.*)$"
