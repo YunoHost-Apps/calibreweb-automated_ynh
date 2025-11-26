@@ -125,6 +125,7 @@ ram.runtime = "200M"
         "libjpeg-dev",    # for comics and image reading in browser
         "build-essential", # for building lol
         "unrar-free"
+        "zip"              # for creating the koplugin.zip during install and upgrade script
     ]
     packages_from_raw_bash = """
     if [[ $YNH_DEBIAN_VERSION == "bookworm" ]]; then

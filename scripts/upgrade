@@ -60,8 +60,6 @@ ynh_script_progression "Adding $app's configuration files..."
 
 ynh_config_add --template=".env" --destination="$install_dir/.env"
 
-ynh_config_add --template="koplugin.zip" --destination="$install_dir/cwa/cps/static/koplugin.zip"
-
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -141,7 +139,7 @@ ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
   else \
     echo "Warning: koplugin.zip not found, skipping move to static directory"; \
   fi && \
-  
+
 #=================================================
 # SETUP LOGROTATE
 #=================================================
