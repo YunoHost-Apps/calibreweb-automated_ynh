@@ -130,13 +130,15 @@ ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
     echo "Warning: cwasync.koplugin folder not found, skipping zip creation"; \
   fi && \
   	# Move koplugin.zip to static directory
-  if [ -f "install_dir/cwa/koreader/plugins/koplugin.zip" ]; then \
+  if [ -f "$install_dir/cwa/koreader/plugins/koplugin.zip" ]; then \
     mkdir -p $install_dir/cwa/cps/static && \
     cp $install_dir/cwa/koreader/plugins/koplugin.zip $install_dir/cwa/cps/static/ && \
     echo "Moved koplugin.zip to static directory"; \
   else \
     echo "Warning: koplugin.zip not found, skipping move to static directory"; \
   fi && \
+
+chown -R $app:$app $install_dir
   
 #=================================================
 # SETUP LOGROTATE
