@@ -117,8 +117,9 @@ ynh_script_progression "Starting patching operations..."
 _ynh_patch_cwa
 
 ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
- if [ -d "$install_dir/koreader/plugins/cwasync.koplugin" ]; then \
-    cd $install_dir/koreader/plugins && \
+
+ if [ -d "$install_dir/cwa/koreader/plugins/cwasync.koplugin" ]; then \
+    cd $install_dir/cwa/koreader/plugins && \
     # Calculate digest of all files in the plugin for debugging purposes
     PLUGIN_DIGEST=$(find cwasync.koplugin -type f -name "*.lua" -o -name "*.json" | sort | xargs sha256sum | sha256sum | cut -d' ' -f1) && \
     echo "Plugin digest: $PLUGIN_DIGEST" && \
@@ -132,7 +133,15 @@ ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
   else \
     echo "Warning: cwasync.koplugin folder not found, skipping zip creation"; \
   fi && \
-
+  	# Move koplugin.zip to static directory
+  if [ -f "install_dir/cwa/koreader/plugins/koplugin.zip" ]; then \
+    mkdir -p $install_dir/cwa/cps/static && \
+    cp $install_dir/cwa/koreader/plugins/koplugin.zip $install_dir/cwa/cps/static/ && \
+    echo "Moved koplugin.zip to static directory"; \
+  else \
+    echo "Warning: koplugin.zip not found, skipping move to static directory"; \
+  fi && \
+  
 #=================================================
 # SETUP LOGROTATE
 #=================================================
