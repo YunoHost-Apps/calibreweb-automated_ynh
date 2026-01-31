@@ -27,7 +27,7 @@ ynh_script_progression "Setting up source files..."
 ynh_config_add --template="../patches/cwa/ub.py.patch.src" --destination="../patches/cwa/ub.py.patch"
 
 ynh_script_progression "Setting up cwa..."
-ynh_setup_source --dest_dir="$install_dir/cwa" --source_id="cwa" --full_replace=1
+ynh_setup_source --dest_dir="$install_dir/cwa" --full_replace=1
 
 # Install kepubify converter
 ynh_script_progression "Setting up kepubify..."
