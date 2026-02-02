@@ -67,7 +67,7 @@ pushd $CWA
     -e "s|/app/KEPUBIFY_RELEASE|${VER_DIR}/kepubify.txt|g" \
     -e "s|/app/cwa_update_notice|$install_dir/config/cwa_update_notice|g" \
     -e "s|/app/theme_migration_notice|$install_dir/config/theme_migration_notice|g" \
-    -e "s|/app/cwa_translation_notice_{lang}|$install_dir/config//app/cwa_translation_notice_{lang}|g" \
+    -e "s|/app/cwa_translation_notice_{lang}|$install_dir/config/cwa_translation_notice_{lang}|g" \
     $APP/admin.py $APP/render_template.py
 
   sed -i "s|\"$CONFIG_DIR/post_request\"|\"$OLD_CONFIG_DIR/post_request\"|; s|python3|/$install_dir/cwa/venv/bin/python3|g" $APP/cwa_functions.py
