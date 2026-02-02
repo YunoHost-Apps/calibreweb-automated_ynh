@@ -31,7 +31,7 @@ mkdir -p "$install_dir/config"/{processed_books,log_archive,.cwa_conversion_tmp}
 mkdir -p $install_dir/config/processed_books/{converted,imported,failed,fixed_originals}
 mkdir -p $install_dir/cwa/{metadata_change_logs,metadata_temp,versions}
 touch $install_dir/config/convert-library.log
-touch $install_dir/config/.cwa_update_notice
+touch $install_dir/config/cwa_update_notice
 
 $install_dir/tools/kepubify --version | awk '{print substr($2 ,2)}' >"$VER_DIR"/kepubify.txt
 ynh_hide_warnings $install_dir/tools/calibre/calibre --version | awk '{print substr($3, 1, length($3) -1)}' >"$VER_DIR"/calibre.txt
@@ -65,7 +65,9 @@ pushd $CWA
     -e "s|/CALIBRE_RELEASE|${VER_DIR}/calibre.txt|g" \
     -e "s/lscw_version/calibreweb_version/g" \
     -e "s|/app/KEPUBIFY_RELEASE|${VER_DIR}/kepubify.txt|g" \
-    -e "s|/app/cwa_update_notice|$install_dir/config/.cwa_update_notice|g" \
+    -e "s|/app/cwa_update_notice|$install_dir/config/cwa_update_notice|g" \
+    -e "s|/app/theme_migration_notice|$install_dir/config/theme_migration_notice|g" \
+    -e "s|/app/cwa_translation_notice_{lang}|$install_dir/config/cwa_translation_notice_{lang}|g" \
     $APP/admin.py $APP/render_template.py
 
   sed -i "s|\"$CONFIG_DIR/post_request\"|\"$OLD_CONFIG_DIR/post_request\"|; s|python3|/$install_dir/cwa/venv/bin/python3|g" $APP/cwa_functions.py
@@ -73,13 +75,35 @@ pushd $CWA
   sed -i "s/chown\", \"-R\", \"abc:abc\"/chown\", \"-R\", \"$app:$app\"/" "$install_dir"/cwa/scripts/*.py
 popd
 
-pushd "$install_dir/cwa/scripts"
-$install_dir/cwa/venv/bin/python3 auto_library.py
-popd
-
 echo -e "{\n}" > $install_dir/config/user_profiles.json
 
 chown -R $app:$app $install_dir/
+}
+
+_ynh_create_koplugin() {
+ if [ -d "$install_dir/cwa/koreader/plugins/cwasync.koplugin" ]; then \
+    cd $install_dir/cwa/koreader/plugins && \
+    # Calculate digest of all files in the plugin for debugging purposes
+    PLUGIN_DIGEST=$(find cwasync.koplugin -type f -name "*.lua" -o -name "*.json" | sort | xargs sha256sum | sha256sum | cut -d' ' -f1) && \
+    echo "Plugin digest: $PLUGIN_DIGEST" && \
+    # Create a file named after the digest inside the plugin folder
+    echo "Plugin files digest: $PLUGIN_DIGEST" > cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    echo "Build date: $(date)" >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    echo "Files included:" >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    find cwasync.koplugin -type f -name "*.lua" -o -name "*.json" | sort >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    zip -r koplugin.zip cwasync.koplugin/ && \
+    echo "Created koplugin.zip from cwasync.koplugin folder with digest file: ${PLUGIN_DIGEST}.digest"; \
+  else \
+    echo "Warning: cwasync.koplugin folder not found, skipping zip creation"; \
+  fi && \
+  	# Move koplugin.zip to static directory
+  if [ -f "$install_dir/cwa/koreader/plugins/koplugin.zip" ]; then \
+    mkdir -p $install_dir/cwa/cps/static && \
+    cp $install_dir/cwa/koreader/plugins/koplugin.zip $install_dir/cwa/cps/static/ && \
+    echo "Moved koplugin.zip to static directory"; \
+  else \
+    echo "Warning: koplugin.zip not found, skipping move to static directory"; \
+  fi
 }
 
 _ynh_adapt_cwa_db() {
