@@ -31,7 +31,7 @@ mkdir -p "$install_dir/config"/{processed_books,log_archive,.cwa_conversion_tmp}
 mkdir -p $install_dir/config/processed_books/{converted,imported,failed,fixed_originals}
 mkdir -p $install_dir/cwa/{metadata_change_logs,metadata_temp,versions}
 touch $install_dir/config/convert-library.log
-touch $install_dir/config/.cwa_update_notice
+touch $install_dir/config/cwa_update_notice
 
 $install_dir/tools/kepubify --version | awk '{print substr($2 ,2)}' >"$VER_DIR"/kepubify.txt
 ynh_hide_warnings $install_dir/tools/calibre/calibre --version | awk '{print substr($3, 1, length($3) -1)}' >"$VER_DIR"/calibre.txt
@@ -45,7 +45,7 @@ pushd $CWA
 
 
   # Gather list of Python scripts to be iterated
-  FILES=$(find ./scripts "$APP" -type f -name "*.py" -or -name "*.html")
+  FILES=$(find "$APP" -type f)
   # Create two arrays containing the paths to be modified
   OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA")
   NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA")
@@ -65,7 +65,9 @@ pushd $CWA
     -e "s|/CALIBRE_RELEASE|${VER_DIR}/calibre.txt|g" \
     -e "s/lscw_version/calibreweb_version/g" \
     -e "s|/app/KEPUBIFY_RELEASE|${VER_DIR}/kepubify.txt|g" \
-    -e "s|/app/cwa_update_notice|$install_dir/config/.cwa_update_notice|g" \
+    -e "s|/app/cwa_update_notice|$install_dir/config/cwa_update_notice|g" \
+    -e "s|/app/theme_migration_notice|$install_dir/config/theme_migration_notice|g" \
+    -e "s|/app/cwa_translation_notice_{lang}|$install_dir/config//app/cwa_translation_notice_{lang}|g" \
     $APP/admin.py $APP/render_template.py
 
   sed -i "s|\"$CONFIG_DIR/post_request\"|\"$OLD_CONFIG_DIR/post_request\"|; s|python3|/$install_dir/cwa/venv/bin/python3|g" $APP/cwa_functions.py

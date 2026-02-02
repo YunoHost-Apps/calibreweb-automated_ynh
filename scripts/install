@@ -46,7 +46,6 @@ popd
 chown -R $app:$app $install_dir
 chmod -R 770 $install_dir/tools
 
-
 #=================================================
 # CREATE FILES AND DIRECTORIES
 #=================================================
@@ -90,6 +89,9 @@ ynh_config_add_nginx
 #=================================================
 # INSTALL DEPENDENCIES
 #=================================================
+ynh_script_progression "Starting patching operations..."
+_ynh_patch_cwa
+
 ynh_script_progression "Installing pip requirements..."
 
 pushd "$install_dir/cwa"
@@ -108,9 +110,6 @@ popd
 chmod +x "$install_dir/cwa/scripts/"*.sh || true
 chmod +x "$install_dir/cwa/scripts/"*.py || true
 chmod 775 "$install_dir/cwa/cps/"*.py || true
-
-ynh_script_progression "Starting patching operations..."
-_ynh_patch_cwa
 
 ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
 
