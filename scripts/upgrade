@@ -114,7 +114,7 @@ chmod +x "$install_dir/cwa/scripts/"*.py || true
 chmod 775 "$install_dir/cwa/cps/"*.py || true
 
 pushd "$install_dir/cwa/scripts"
-$install_dir/cwa/venv/bin/python3 auto_library.py
+  $install_dir/cwa/venv/bin/python3 auto_library.py
 popd
 
 ynh_script_progression "Creating koplugin.zip from KOReader plugin folder......"
