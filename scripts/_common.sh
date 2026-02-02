@@ -103,7 +103,7 @@ _ynh_create_koplugin() {
     echo "Moved koplugin.zip to static directory"; \
   else \
     echo "Warning: koplugin.zip not found, skipping move to static directory"; \
-  fi && \
+  fi
 }
 
 _ynh_adapt_cwa_db() {
