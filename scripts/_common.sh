@@ -75,13 +75,35 @@ pushd $CWA
   sed -i "s/chown\", \"-R\", \"abc:abc\"/chown\", \"-R\", \"$app:$app\"/" "$install_dir"/cwa/scripts/*.py
 popd
 
-pushd "$install_dir/cwa/scripts"
-$install_dir/cwa/venv/bin/python3 auto_library.py
-popd
-
 echo -e "{\n}" > $install_dir/config/user_profiles.json
 
 chown -R $app:$app $install_dir/
+}
+
+_ynh_create_koplugin() {
+ if [ -d "$install_dir/cwa/koreader/plugins/cwasync.koplugin" ]; then \
+    cd $install_dir/cwa/koreader/plugins && \
+    # Calculate digest of all files in the plugin for debugging purposes
+    PLUGIN_DIGEST=$(find cwasync.koplugin -type f -name "*.lua" -o -name "*.json" | sort | xargs sha256sum | sha256sum | cut -d' ' -f1) && \
+    echo "Plugin digest: $PLUGIN_DIGEST" && \
+    # Create a file named after the digest inside the plugin folder
+    echo "Plugin files digest: $PLUGIN_DIGEST" > cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    echo "Build date: $(date)" >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    echo "Files included:" >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    find cwasync.koplugin -type f -name "*.lua" -o -name "*.json" | sort >> cwasync.koplugin/${PLUGIN_DIGEST}.digest && \
+    zip -r koplugin.zip cwasync.koplugin/ && \
+    echo "Created koplugin.zip from cwasync.koplugin folder with digest file: ${PLUGIN_DIGEST}.digest"; \
+  else \
+    echo "Warning: cwasync.koplugin folder not found, skipping zip creation"; \
+  fi && \
+  	# Move koplugin.zip to static directory
+  if [ -f "$install_dir/cwa/koreader/plugins/koplugin.zip" ]; then \
+    mkdir -p $install_dir/cwa/cps/static && \
+    cp $install_dir/cwa/koreader/plugins/koplugin.zip $install_dir/cwa/cps/static/ && \
+    echo "Moved koplugin.zip to static directory"; \
+  else \
+    echo "Warning: koplugin.zip not found, skipping move to static directory"; \
+  fi && \
 }
 
 _ynh_adapt_cwa_db() {
