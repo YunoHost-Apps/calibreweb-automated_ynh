@@ -1,8 +1,8 @@
 diff --git a/cps/ub.py b/cps/ub.py
-index 0bbd0ed..9467153 100644
+index ed1b868..6806eea 100644
 --- a/cps/ub.py
 +++ b/cps/ub.py
-@@ -792,6 +792,7 @@ def migrate_config_table(engine, _session):
+@@ -1043,6 +1043,7 @@ def migrate_magic_shelf_table(engine, _session):
  def migrate_Database(_session):
      engine = _session.bind
      add_missing_tables(engine, _session)
@@ -10,7 +10,7 @@ index 0bbd0ed..9467153 100644
      migrate_registration_table(engine, _session)
      migrate_user_session_table(engine, _session)
      migrate_user_table(engine, _session)
-@@ -849,8 +850,8 @@ def create_anonymous_user(_session):
+@@ -1173,8 +1174,8 @@ def create_anonymous_user(_session):
  # Generate User admin with admin123 password, and access to everything
  def create_admin_user(_session):
      user = User()
@@ -20,4 +20,4 @@ index 0bbd0ed..9467153 100644
 +    user.email = "__ADMIN_MAIL__"
      user.role = constants.ADMIN_USER_ROLES
      user.sidebar_view = constants.ADMIN_USER_SIDEBAR
-
+ 
