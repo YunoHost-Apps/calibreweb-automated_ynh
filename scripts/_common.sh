@@ -121,7 +121,7 @@ _ynh_adapt_cwa_db() {
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_login_type='1'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_provider_url='localhost'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_dn='dc=yunohost,dc=org'"
-  sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=calibreweb.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
+  sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=$app.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_group_object_filter='(&(objectClass=posixGroup)(cn=%s.main))'"
 
   # Correct logs path

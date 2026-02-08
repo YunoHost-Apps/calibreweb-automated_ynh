@@ -18,6 +18,11 @@ ynh_script_progression "Stopping $app's systemd service..."
 
 ynh_systemctl --service="${app}" --action="stop"
 
+if ynh_app_upgrading_from_version_before 4.0.6~ynh2
+then
+  sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=$app.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
+fi
+
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
