@@ -4,6 +4,9 @@
 # COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
+# Path for the service to retrieve the Calibre tools
+path_with_calibre="$install_dir/tools/calibre:$install_dir/bin:$data_dir/bin:$PATH"
+
 log_file=/var/log/$app/$app.log
 access_log_file=/var/log/$app/$app-access.log
 
@@ -16,6 +19,8 @@ OLD_CONFIG_DIR="/config"
 CONFIG_DIR="$install_dir/config"
 OLD_DB="/config/app.db"
 DB="$install_dir/config/app.db"
+OLD_CALIBRE="/app/calibre"
+CALIBRE="$install_dir/tools/calibre"
 OLD_META_TEMP="$OLD_CWA/metadata_temp"
 META_TEMP="$CWA/metadata_temp"
 OLD_META_LOGS="$OLD_CWA/metadata_change_logs"
@@ -47,8 +52,8 @@ pushd $CWA
   # Gather list of Python scripts to be iterated
   FILES=$(find ./scripts "$APP" -type f -name "*.py" -or -name "*.html")
   # Create two arrays containing the paths to be modified
-  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA")
-  NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA")
+  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA" "$OLD_CALIBRE")
+  NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA" "$CALIBRE")
 
   # Loop over each file; if the old paths are there, then replace using sed
   for file in $FILES; do
@@ -116,7 +121,7 @@ _ynh_adapt_cwa_db() {
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_login_type='1'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_provider_url='localhost'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_dn='dc=yunohost,dc=org'"
-  sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=calibreweb.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
+  sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_user_object='(&(objectClass=posixAccount)(permission=cn=$app.main,ou=permission,dc=yunohost,dc=org)(uid=%s))'"
   sqlite3 $install_dir/config/app.db "UPDATE settings SET config_ldap_group_object_filter='(&(objectClass=posixGroup)(cn=%s.main))'"
 
   # Correct logs path
