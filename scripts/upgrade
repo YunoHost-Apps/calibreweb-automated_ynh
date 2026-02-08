@@ -28,9 +28,6 @@ fi
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-#Set settings constant initializer of the app (variables aren’t updated otherwise)
-ynh_config_add --template="../patches/cwa/ub.py.patch.src" --destination="../patches/cwa/ub.py.patch"
-
 ynh_script_progression "Setting up cwa..."
 ynh_setup_source --dest_dir="$install_dir/cwa" --full_replace=1
 
@@ -64,6 +61,15 @@ ynh_multimedia_addaccess $app
 ynh_script_progression "Adding $app's configuration files..."
 
 ynh_config_add --template=".env" --destination="$install_dir/.env"
+
+ynh_replace --match="engine = _session.bind" --replace="engine = _session.bind\n    create_admin_user(_session)" --file="$install_dir/cwa/cps/ub.py"
+
+#Use sed because the command with ynh_replace doesn’t appear to change anything, and so was the previous patch
+#ynh_replace --match="user.name = "admin"\n    user.email = "admin@example.org"\n    user.role = constants.ADMIN_USER_ROLES" --replace="user.name = "$admin"\n    user.email = "$admin_mail"\n    user.role = constants.ADMIN_USER_ROLES" --file="$install_dir/cwa/cps/ub.py"
+sed -i \
+    -e "s/user\.name = \"admin\"/user.name = \"$admin\"/" \
+    -e "s/user\.email = \"admin@example\.org\"/user.email = \"$admin_mail\"/" \
+    "$install_dir/cwa/cps/ub.py"
 
 #=================================================
 # NGINX CONFIGURATION
