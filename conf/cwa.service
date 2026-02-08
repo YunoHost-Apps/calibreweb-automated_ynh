@@ -7,6 +7,7 @@ Type=simple
 User=__APP__
 Group=__APP__
 WorkingDirectory=__INSTALL_DIR__/cwa
+Environment="PATH=__PATH_WITH_CALIBRE__"
 EnvironmentFile=__INSTALL_DIR__/.env
 ExecStart=/bin/sh -c '__INSTALL_DIR__/cwa/venv/bin/python3 __INSTALL_DIR__/cwa/cps.py'
 StandardOutput=append:/var/log/__APP__/__APP__.log
