@@ -16,6 +16,8 @@ OLD_CONFIG_DIR="/config"
 CONFIG_DIR="$install_dir/config"
 OLD_DB="/config/app.db"
 DB="$install_dir/config/app.db"
+OLD_CALIBRE="/app/calibre"
+CALIBRE="$install_dir/tools/calibre"
 OLD_META_TEMP="$OLD_CWA/metadata_temp"
 META_TEMP="$CWA/metadata_temp"
 OLD_META_LOGS="$OLD_CWA/metadata_change_logs"
@@ -47,8 +49,8 @@ pushd $CWA
   # Gather list of Python scripts to be iterated
   FILES=$(find ./scripts "$APP" -type f -name "*.py" -or -name "*.html")
   # Create two arrays containing the paths to be modified
-  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA")
-  NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA")
+  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA" "$OLD_CALIBRE")
+  NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA" "$CALIBRE")
 
   # Loop over each file; if the old paths are there, then replace using sed
   for file in $FILES; do
