@@ -14,8 +14,7 @@ index ed1b868..6806eea 100644
  # Generate User admin with admin123 password, and access to everything
  def create_admin_user(_session):
      user = User()
--    user.name = "admin"
--    user.email = "admin@example.org"
+t
 +    user.name = "__ADMIN__"
 +    user.email = "__ADMIN_MAIL__"
      user.role = constants.ADMIN_USER_ROLES

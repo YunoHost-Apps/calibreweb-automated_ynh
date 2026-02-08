@@ -26,7 +26,7 @@ cwa_release=$(ynh_app_upstream_version)
 ynh_script_progression "Setting up source files..."
 
 #Set settings constant initializer of the app (variables aren’t updated otherwise)
-ynh_config_add --template="../patches/cwa/ub.py.patch.src" --destination="../patches/cwa/ub.py.patch"
+#ynh_config_add --template="../patches/cwa/ub.py.patch.src" --destination="../patches/cwa/ub.py.patch"
 
 ynh_script_progression "Setting up cwa..."
 ynh_setup_source --dest_dir="$install_dir/cwa"
@@ -61,6 +61,10 @@ ynh_multimedia_addaccess $app
 ynh_script_progression "Adding $app's configuration files..."
 
 ynh_config_add --template=".env" --destination="$install_dir/.env"
+
+ynh_replace --match="add_missing_tables(engine, _session)" --replace="add_missing_tables(engine, _session)\n  create_admin_user(_session)" --file="$install_dir/cwa/cps/ub.py"
+ynh_replace --match="user.name = "admin"" --replace="user.name = "$admin"" --file="$install_dir/cwa/cps/ub.py"
+ynh_replace --match="user.email = "admin@example.org"" --replace="user.email = "$admin_mail"" --file="$install_dir/cwa/cps/ub.py"
 
 #=================================================
 # NGINX CONFIGURATION
