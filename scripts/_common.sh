@@ -25,7 +25,7 @@ OLD_META_TEMP="$OLD_CWA/metadata_temp"
 META_TEMP="$CWA/metadata_temp"
 OLD_META_LOGS="$OLD_CWA/metadata_change_logs"
 META_LOGS="$CWA/metadata_change_logs"
-OLD_INGEST="cwa-book-ingest"
+OLD_INGEST="/cwa-book-ingest"
 INGEST="$install_dir/config/cwa-book-ingest"
 CONVERSION=".cwa_conversion_tmp"
 
