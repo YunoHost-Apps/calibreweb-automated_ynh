@@ -32,8 +32,8 @@ CONVERSION=".cwa_conversion_tmp"
 # Heavily inspired by/copy-pasted https://github.com/vhsdream/calibre-web-automated-lxc/blob/main/cwa-lxc.sh
 _ynh_patch_cwa() {
 
-mkdir -p "$install_dir"/{config}
-mkdir -p "$install_dir/config"/{processed_books,log_archive,.cwa_conversion_tmp}
+mkdir -p "$install_dir"/config
+mkdir -p "$install_dir/config"/{processed_books,log_archive,.cwa_conversion_tmp,cwa-book-ingest}
 mkdir -p $install_dir/config/processed_books/{converted,imported,failed,fixed_originals}
 mkdir -p $install_dir/cwa/{metadata_change_logs,metadata_temp,versions}
 touch $install_dir/config/convert-library.log
@@ -47,7 +47,7 @@ pushd $CWA
   # Deal with a couple initial modifications
   sed -i "s|\"/calibre-library\"| \"$calibre_library_dir\"|" dirs.json ./scripts/auto_library.py
   sed -i -e "s|\"$OLD_CONFIG_DIR/$CONVERSION\"| \"$CONFIG_DIR/$CONVERSION\"|" \
-    -e "s|\"/$OLD_INGEST\"| \"$INGEST\"|" dirs.json
+    -e "s|\"$OLD_INGEST\"| \"$INGEST\"|" dirs.json
 
 
   # Gather list of Python scripts to be iterated
