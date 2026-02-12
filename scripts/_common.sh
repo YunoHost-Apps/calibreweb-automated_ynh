@@ -25,13 +25,14 @@ OLD_META_TEMP="$OLD_CWA/metadata_temp"
 META_TEMP="$CWA/metadata_temp"
 OLD_META_LOGS="$OLD_CWA/metadata_change_logs"
 META_LOGS="$CWA/metadata_change_logs"
-INGEST="cwa-book-ingest"
+OLD_INGEST="cwa-book-ingest"
+INGEST="$install_dir/config/cwa-book-ingest"
 CONVERSION=".cwa_conversion_tmp"
 
 # Heavily inspired by/copy-pasted https://github.com/vhsdream/calibre-web-automated-lxc/blob/main/cwa-lxc.sh
 _ynh_patch_cwa() {
 
-mkdir -p "$install_dir"/{config,ingest}
+mkdir -p "$install_dir"/{config}
 mkdir -p "$install_dir/config"/{processed_books,log_archive,.cwa_conversion_tmp}
 mkdir -p $install_dir/config/processed_books/{converted,imported,failed,fixed_originals}
 mkdir -p $install_dir/cwa/{metadata_change_logs,metadata_temp,versions}
@@ -46,13 +47,13 @@ pushd $CWA
   # Deal with a couple initial modifications
   sed -i "s|\"/calibre-library\"| \"$calibre_library_dir\"|" dirs.json ./scripts/auto_library.py
   sed -i -e "s|\"$OLD_CONFIG_DIR/$CONVERSION\"| \"$CONFIG_DIR/$CONVERSION\"|" \
-    -e "s|\"/$INGEST\"| \"$install_dir/config/$INGEST\"|" dirs.json
+    -e "s|\"/$OLD_INGEST\"| \"$INGEST\"|" dirs.json
 
 
   # Gather list of Python scripts to be iterated
-  FILES=$(find ./ "$APP" -type f -name "*.py" -or -name "*.html")
+  FILES=$(find ./scripts "$APP" -type f -name "*.py" -or -name "*.html")
   # Create two arrays containing the paths to be modified
-  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA" "$OLD_CALIBRE" "$INGEST")
+  OLD_PATHS=("$OLD_META_TEMP" "$OLD_META_LOGS" "$OLD_CONFIG_DIR" "$OLD_CWA" "$OLD_CALIBRE" "$OLD_INGEST")
   NEW_PATHS=("$META_TEMP" "$META_LOGS" "$CONFIG_DIR" "$CWA" "$CALIBRE" "$INGEST")
 
   # Loop over each file; if the old paths are there, then replace using sed
