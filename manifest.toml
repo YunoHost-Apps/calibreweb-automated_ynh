@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "4.0.6~ynh3"
+version = "4.0.6~ynh4"
 
 maintainers = ["Thovi98"]
 
