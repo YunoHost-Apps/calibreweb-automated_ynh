@@ -12,3 +12,17 @@ services = ["__APP__"]
         ask.en = "Change path of the electronic library"
         help.en = "Please assure that read/write permissions to this location are correctly set"
         type = "path"
+
+
+    [main.config]
+    name.en = "Configuration options"
+    name.fr = "Options de configuration"
+
+        [main.config.data_dir]
+        ask.en = "Change data directory."
+        ask.fr = "Changer le répertoire de données."
+        type = "path"
+        default = "/var/www/__APP__/config/.config/calibre"
+        help.en = "Change the data directory where are stored all the uploaded .gpx files and the profile pictures."
+        help.fr = "Change le répertoire de données où sont stockés tous les fichiers .gpx téléversés et les photos de profil."
+        bind = "CALIBRE_CONFIG_DIR:/var/www/__APP__/.env"
