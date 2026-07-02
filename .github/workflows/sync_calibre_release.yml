@@ -11,6 +11,9 @@ on:
     tags:
       - "*"
 
+  schedule:
+    - cron: '0 23 * * *'
+
 # Ensure the action has write permissions to the current repository
 permissions:
   contents: write
