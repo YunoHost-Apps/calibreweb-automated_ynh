@@ -114,8 +114,7 @@ ynh_script_progression "Building backend..."
 pushd "$install_dir/cwa"
 	ynh_exec_as_app python3 -m venv "$install_dir/cwa/venv"
 	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --upgrade wheel pip setuptools
-	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --no-cache-dir --upgrade --use-pep517 -r "$install_dir/cwa/requirements.txt"
-	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --no-cache-dir --upgrade --use-pep517 -r "$install_dir/cwa/optional-requirements.txt"
+	ynh_hide_warnings ynh_exec_as_app "$install_dir/cwa/venv/bin/pip" install --no-cache-dir --upgrade --use-pep517 --only-deps "$install_dir/cwa"
 
 	find cps -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
 	find scripts -type f -name "*.py" -exec sed -i 's#/app/calibre-web-automated#'"$install_dir/cwa"'#g' {} \;
