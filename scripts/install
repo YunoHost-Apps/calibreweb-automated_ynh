@@ -103,7 +103,7 @@ _ynh_patch_cwa
 
 ynh_script_progression "Building frontend..."
 
-pushd $install_dir
+pushd "$install_dir"/cwa/frontend
 	ynh_script_progression "npm install... This can be very long, be patient !"
 	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm ci --quiet
 	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm run build
