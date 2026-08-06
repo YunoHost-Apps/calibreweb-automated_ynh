@@ -112,7 +112,15 @@ ynh_config_add_nginx
 ynh_script_progression "Starting patching operations..."
 _ynh_patch_cwa
 
-ynh_script_progression "Installing pip requirements..."
+ynh_script_progression "Building frontend..."
+
+pushd $install_dir
+	ynh_script_progression "npm install... This can be very long, be patient !"
+	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm ci --quiet
+	ynh_hide_warnings ynh_exec_as_app NODE_ENV=production npm run build
+popd
+
+ynh_script_progression "Building backend..."
 
 pushd "$install_dir/cwa"
 	ynh_exec_as_app python3 -m venv "$install_dir/cwa/venv"

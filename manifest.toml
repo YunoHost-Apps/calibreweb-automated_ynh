@@ -140,3 +140,6 @@ ram.runtime = "200M"
         echo "libxml2-dev, libxslt1-dev";
     fi
     """
+
+    [resources.nodejs]
+    version = "24"
