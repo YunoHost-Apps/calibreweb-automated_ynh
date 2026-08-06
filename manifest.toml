@@ -112,6 +112,11 @@ ram.runtime = "200M"
     api.allowed = "visitors"
     api.protected = true
 
+    notes.url = "/api/UserStorage/Metadata"
+    notes.show_tile = false
+    notes.allowed = "visitors"
+    notes.protected = true
+
     [resources.ports]
     main.default = 8083
 
