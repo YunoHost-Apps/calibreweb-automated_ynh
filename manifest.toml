@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "4.0.6~ynh13"
+version = "4.0.6~ynh16"
 
 maintainers = ["Thovi98"]
 
@@ -50,15 +50,15 @@ ram.runtime = "200M"
     autoupdate.version_regex = "^[vV](.*)$"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v9.12.0/calibre-9.12.0-x86_64.txz"
-    amd64.sha256 = "7cf8f5334503ac8f74b9e0b038c17df2dd2827405133ae7118f3aeb38e07ad76"
-    arm64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v9.12.0/calibre-9.12.0-arm64.txz"
-    arm64.sha256 = "a7942d5d4a40ab02a4bf7503b058e17298b1fcff4491b460cf4e0a594c0f9197"
+    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.13.0/calibre-9.13.0-x86_64.txz"
+    amd64.sha256 = "d664fe74953463f1b679945a5460234b61cbf539da48fc78f2111ff8d9503cc0"
+    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.13.0/calibre-9.13.0-arm64.txz"
+    arm64.sha256 = "a700fd765309b5b0fe5725ad907159fe77832f4a78fee59e34eeb31b8002cb7a"
 
     extract = false
     rename = "calibre.txz"
     # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
-    autoupdate.upstream = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh"
+    autoupdate.upstream = "https://github.com/Thovi98/calibre-backup"
     autoupdate.strategy = "latest_github_release"
     autoupdate.asset.amd64 = ".*x86_64.txz"
     autoupdate.asset.arm64 = ".*arm64.txz"
