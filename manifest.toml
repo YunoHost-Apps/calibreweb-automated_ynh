@@ -6,7 +6,7 @@ id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 
-version = "4.0.6~ynh15"
+version = "4.0.6~ynh16"
 
 maintainers = ["Thovi98"]
 
@@ -50,9 +50,9 @@ ram.runtime = "200M"
     autoupdate.version_regex = "^[vV](.*)$"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v9.13.0/calibre-9.13.0-x86_64.txz"
+    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.13.0/calibre-9.13.0-x86_64.txz"
     amd64.sha256 = "d664fe74953463f1b679945a5460234b61cbf539da48fc78f2111ff8d9503cc0"
-    arm64.url = "https://github.com/YunoHost-Apps/calibreweb-automated_ynh/releases/download/v9.13.0/calibre-9.13.0-arm64.txz"
+    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.13.0/calibre-9.13.0-arm64.txz"
     arm64.sha256 = "a700fd765309b5b0fe5725ad907159fe77832f4a78fee59e34eeb31b8002cb7a"
 
     extract = false
