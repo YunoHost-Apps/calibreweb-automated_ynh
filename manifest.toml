@@ -5,6 +5,7 @@ packaging_format = 2
 id = "calibreweb-automated"
 name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
+description.fr = "Automatisez et simplifiez entièrement votre bibliothèque de livres numériques"
 
 version = "4.0.8~ynh2"
 
