@@ -1,0 +1,1 @@
+Calibre-Web Automated vise à tout réunir en un seul outil : l'interface web moderne et légère de Calibre-Web, la puissance et la polyvalence de Calibre, et par-dessus, une multitude de fonctions et d'automatisations en plus.
