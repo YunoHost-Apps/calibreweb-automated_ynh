@@ -7,7 +7,7 @@ name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 description.fr = "Automatisez et simplifiez entièrement votre bibliothèque de livres numériques"
 
-version = "4.0.8~ynh2"
+version = "4.0.8~ynh3"
 
 maintainers = ["Thovi98"]
 
@@ -51,10 +51,10 @@ ram.runtime = "200M"
     autoupdate.version_regex = "^[vV](.*)$"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.16.0/calibre-9.16.0-x86_64.txz"
-    amd64.sha256 = "03cd4fda43de23d65405a3c90b924bc4a5c84753e388589d4ca343d9ba561a1d"
-    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.16.0/calibre-9.16.0-arm64.txz"
-    arm64.sha256 = "82bf5de819a655fc0c8b789d388fef53c4583f9c2f9b83a14df42724519a197d"
+    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.18.0/calibre-9.18.0-x86_64.txz"
+    amd64.sha256 = "da638166fb3dd204be77cf0f871a40d803536b3e5948969c5233b8e4f1e1dbe6"
+    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.18.0/calibre-9.18.0-arm64.txz"
+    arm64.sha256 = "7f29f1786dcfc5b6f3b6d29b245998a6701501169fbd4c853f17c35d3a635e91"
 
     extract = false
     rename = "calibre.txz"
