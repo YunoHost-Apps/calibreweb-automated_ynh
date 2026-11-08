@@ -7,7 +7,7 @@ name = "Calibre-Web Automated"
 description.en = "Fully automate and simplify your eBook set up"
 description.fr = "Automatisez et simplifiez entièrement votre bibliothèque de livres numériques"
 
-version = "4.0.8~ynh4"
+version = "4.0.8~ynh3"
 
 maintainers = ["Thovi98"]
 
