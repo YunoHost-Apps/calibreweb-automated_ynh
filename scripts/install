@@ -179,6 +179,8 @@ ynh_systemctl --service="${app}" --action="start" --wait_until="Starting Gevent 
 if ! $(ynh_permission_has_user --permission=main --user=visitors); then
 	ynh_systemctl --service=$app --action="stop"
 	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_login_header_name='X-Remote-User', config_allow_reverse_proxy_header_login='True', config_allow_reverse_proxy_header_login=1 WHERE ID=1;"
+	# Let YunoHost users in without a prior local account (SSO is the only login)
+	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_auto_create_users=1 WHERE ID=1;"
 	ynh_systemctl --service=$app --action="start" --wait_until="Starting Gevent server on"
 fi
 
