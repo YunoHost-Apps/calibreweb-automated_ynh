@@ -51,13 +51,13 @@ ram.runtime = "200M"
     autoupdate.version_regex = "^[vV](.*)$"
 
     [resources.sources.calibre]
-    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.18.0/calibre-9.18.0-x86_64.txz"
-    amd64.sha256 = "da638166fb3dd204be77cf0f871a40d803536b3e5948969c5233b8e4f1e1dbe6"
-    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.18.0/calibre-9.18.0-arm64.txz"
-    arm64.sha256 = "7f29f1786dcfc5b6f3b6d29b245998a6701501169fbd4c853f17c35d3a635e91"
+    amd64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.19.0/calibre-9.19.0-x86_64.txz"
+    amd64.sha256 = "35c1cbda1a2548aceeb89cb0a4be47a36025b5dc102ac046f7eaf98ba46a452d"
+    arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.19.0/calibre-9.19.0-arm64.txz"
+    arm64.sha256 = "8de5c5d3af3f28e0227e215a27e8d69c14c50a38cc3065b249996997df392a2f"
 
-    extract = false
-    rename = "calibre.txz"
+    in_subdir = false
+
     # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
     autoupdate.upstream = "https://github.com/Thovi98/calibre-backup"
     autoupdate.strategy = "latest_github_release"
