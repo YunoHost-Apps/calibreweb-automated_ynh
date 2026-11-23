@@ -46,10 +46,6 @@ ynh_setup_source --dest_dir="$install_dir/tools" --source_id="kepubify" --full_r
 ynh_script_progression "Setting up Calibre..."
 ynh_setup_source --dest_dir="$install_dir/tools/calibre" --source_id="calibre"
 
-pushd "$install_dir/tools/calibre"
-	tar -xvf calibre.txz
-popd
-
 chown -R $app:$app $install_dir
 chmod -R 770 $install_dir/tools
 

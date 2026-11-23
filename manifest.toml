@@ -56,8 +56,8 @@ ram.runtime = "200M"
     arm64.url = "https://github.com/Thovi98/calibre-backup/releases/download/v9.19.0/calibre-9.19.0-arm64.txz"
     arm64.sha256 = "8de5c5d3af3f28e0227e215a27e8d69c14c50a38cc3065b249996997df392a2f"
 
-    extract = false
-    rename = "calibre.txz"
+    in_subdir = false
+
     # We sync release from official repo https://github.com/kovidgoyal/calibre because they only keep the assets of latest version…
     autoupdate.upstream = "https://github.com/Thovi98/calibre-backup"
     autoupdate.strategy = "latest_github_release"
