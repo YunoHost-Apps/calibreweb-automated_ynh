@@ -97,6 +97,8 @@ if $(ynh_permission_has_user --permission=main --user=visitors); then
 	            --file="../conf/nginx.conf"
 else
 	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_login_header_name='X-Remote-User', config_allow_reverse_proxy_header_login='True', config_allow_reverse_proxy_header_login=1 WHERE ID=1;"
+	# Let YunoHost users in without a prior local account (SSO is the only login)
+	sqlite3 $install_dir/config/app.db "UPDATE settings SET config_reverse_proxy_auto_create_users=1 WHERE ID=1;"
 fi
 
 # Create a dedicated nginx config
